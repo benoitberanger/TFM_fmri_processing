@@ -6,7 +6,7 @@ load e
 subj_path = e.getPath;
 onsets_path = fullfile(subj_path,'onsets');
 
-onsets_datfile = gfile(onsets_path,'00\d.dat$');
+onsets_datfile = gfile(onsets_path,'_indiview_run\d.dat$');
 
 names = {'jitter_1', 'static', 'mvt_amb', 'mvt_noamp', 'jitter_2', 'response'};
 jitter_1 = 1;
@@ -20,12 +20,10 @@ for iSubj = 1 : length(onsets_datfile)
     
     for iRun = 1 : size(onsets_datfile{iSubj},1)
         
-        if iRun < 6
-            dat = importfile_dat_INDIVIEW( deblank(onsets_datfile{iSubj}(iRun,:)) );
-        elseif iRun == 6
-            dat = importfile_dat_LOCA( deblank(onsets_datfile{iSubj}(iRun,:)) );
-        else
-            error('%d',iRun)
+        dat = importfile_dat_INDIVIEW( deblank(onsets_datfile{iSubj}(iRun,:)) );
+        
+        if any(dat.OK==0)
+            dat = dat(dat.OK==1,:); % reject bad trials
         end
         
         [ onsets , durations ] = deal( cell(size(names)) );
@@ -85,7 +83,7 @@ for iSubj = 1 : length(onsets_datfile)
         end
         
         [pathstr, name, ext] = fileparts(   deblank(onsets_datfile{iSubj}(iRun,:)) );
-        save( fullfile(pathstr,[name '_spm_cossin']) , 'names', 'onsets', 'durations', 'pmod' )
+        save( fullfile(pathstr,[name '_cossin']) , 'names', 'onsets', 'durations', 'pmod' )
         
         % plotSPMnod(names,onsets,durations);
         

@@ -6,7 +6,7 @@ load e
 subj_path = e.getPath;
 onsets_path = fullfile(subj_path,'onsets');
 
-onsets_datfile = gfile(onsets_path,'00\d.dat$');
+onsets_datfile = gfile(onsets_path,'_indiview_run\d.dat$');
 
 names = {'jitter_1', 'static', 'mvt_amb', 'mvt_noamp', 'jitter_2', 'response'};
 jitter_1 = 1;
@@ -20,12 +20,10 @@ for iSubj = 1 : length(onsets_datfile)
     
     for iRun = 1 : size(onsets_datfile{iSubj},1)
         
-        if iRun < 6
-            dat = importfile_dat_INDIVIEW( deblank(onsets_datfile{iSubj}(iRun,:)) );
-        elseif iRun == 6
-            dat = importfile_dat_LOCA( deblank(onsets_datfile{iSubj}(iRun,:)) );
-        else
-            error('%d',iRun)
+        dat = importfile_dat_INDIVIEW( deblank(onsets_datfile{iSubj}(iRun,:)) );
+        
+        if any(dat.OK==0)
+            dat = dat(dat.OK==1,:); % reject bad trials
         end
         
         [ onsets , durations ] = deal( cell(size(names)) );
@@ -68,18 +66,28 @@ for iSubj = 1 : length(onsets_datfile)
             flag_AMBIG   = logical( dat.AMBIG==1 );
             flag_NOAMBIG = logical( dat.AMBIG==0 );
             
-            pmod(mvt_amb  ).name {1}  = 'angle';
-            pmod(mvt_amb  ).param{1}  = dat.ANG(flag_AMBIG);
+            pmod(mvt_amb  ).name {1}  = 'cos';
+            pmod(mvt_amb  ).param{1}  = cos( dat.ANG(flag_AMBIG)*pi/180 );
             pmod(mvt_amb  ).poly {1}  = 1;
+            pmod(mvt_amb  ).name {2}  = 'sin';
+            pmod(mvt_amb  ).param{2}  = sin( dat.ANG(flag_AMBIG)*pi/180 );
+            pmod(mvt_amb  ).poly {2}  = 1;
+            pmod(mvt_amb  ).name {3}  = 'ambig';
+            pmod(mvt_amb  ).param{3}  = dat.diff_ang(flag_AMBIG);
+            pmod(mvt_amb  ).poly {3}  = 1;
             
-            pmod(mvt_noamb).name {1}  = 'angle';
-            pmod(mvt_noamb).param{1}  = dat.ANG(flag_NOAMBIG);
+            pmod(mvt_noamb).name {1}  = 'cos';
+            pmod(mvt_noamb).param{1}  = cos( dat.ANG(flag_NOAMBIG)*pi/180 );
             pmod(mvt_noamb).poly {1}  = 1;
+            pmod(mvt_noamb).name {2}  = 'sin';
+            pmod(mvt_noamb).param{2}  = sin( dat.ANG(flag_NOAMBIG)*pi/180 );
+            pmod(mvt_noamb).poly {2}  = 1;
+            % no ambig for mvt_noamb
             
         end
         
         [pathstr, name, ext] = fileparts(   deblank(onsets_datfile{iSubj}(iRun,:)) );
-        save( fullfile(pathstr,[name '_spm']) , 'names', 'onsets', 'durations', 'pmod' )
+        save( fullfile(pathstr,[name '_ambig']) , 'names', 'onsets', 'durations', 'pmod' )
         
         % plotSPMnod(names,onsets,durations);
         

@@ -29,7 +29,7 @@ par.redo      = 1;
 par.usePhysio = 0;
 par.noiseROI  = 1;
 
-par.print_figures = 2;
+par.print_figures = 0;
 par.pct = 0;
 
 par
