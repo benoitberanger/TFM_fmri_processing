@@ -38,11 +38,11 @@ for m  = 1 : length(models)
     
     % Open SPM GUI
     matlabbatch{1}.spm.stats.results.spmmat = {models(m).path};
-    matlabbatch{1}.spm.stats.results.conspec.titlestr = '';
+    matlabbatch{1}.spm.stats.results.conspec.titlestr = models(m).exam.name;
     matlabbatch{1}.spm.stats.results.conspec.contrasts = 1;
     matlabbatch{1}.spm.stats.results.conspec.threshdesc = 'none';
     matlabbatch{1}.spm.stats.results.conspec.thresh = 0.001;
-    matlabbatch{1}.spm.stats.results.conspec.extent = 20;
+    matlabbatch{1}.spm.stats.results.conspec.extent = 10;
     matlabbatch{1}.spm.stats.results.conspec.conjunction = 1;
     matlabbatch{1}.spm.stats.results.conspec.mask.none = 1;
     matlabbatch{1}.spm.stats.results.units = 1;
@@ -66,7 +66,7 @@ for m  = 1 : length(models)
         xSPM2.swd   = xSPM.swd;
         try, xSPM2.units = xSPM.units; end
         %         xSPM2.Ic    = getfield(get(obj,'UserData'),'Ic');
-        xSPM2.Ic    = con
+        xSPM2.Ic    = con;
         if isempty(xSPM2.Ic) || all(xSPM2.Ic == 0), xSPM2 = rmfield(xSPM2,'Ic'); end
         xSPM2.Im    = xSPM.Im;
         xSPM2.pm    = xSPM.pm;
@@ -132,4 +132,4 @@ for m  = 1 : length(models)
     
 end
 
-
+fprintf('\n\n all done \n')
