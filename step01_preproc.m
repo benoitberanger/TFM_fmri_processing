@@ -6,9 +6,9 @@ clc
 maindir = '/network/lustre/iss01/cenir/analyse/irm/users/benoit.beranger/TFM';
 
 par.redo= 0;
-par.run = 0;
+par.run = 1;
 par.pct = 0;
-par.sge = 1;
+par.sge = 0;
 par.mem = '8G';
 
 
@@ -52,6 +52,7 @@ e.unzipVolume(par);
 par.subfolder = 0;         % 0 means "do not write in subfolder"
 par.biasstr   = 0.5;
 par.accstr    = 0.5;
+%par.GM        = [1 0 1 0]; %                          (wp1*)     /                        (mwp1*)     /              (p1*)     /                            (rp1*)
 par.WM        = [1 0 1 0]; %                          (wp2*)     /                        (mwp2*)     /              (p2*)     /                            (rp2*)
 par.CSF       = [1 0 1 0]; %                          (wp3*)     /                        (mwp3*)     /              (p3*)     /                            (rp3*)
 par.TPMC      = [1 0 1 0]; %                          (wp[456]*) /                        (mwp[456]*) /              (p[456]*) /                            (rp[456]*)

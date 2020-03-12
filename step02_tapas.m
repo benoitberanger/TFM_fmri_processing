@@ -3,10 +3,9 @@ clc
 
 load e.mat
 
-dirFunc = e.getSerie('run_.*_nm$').toJob
+%%
 
-%% Fetch noise ROI dirs
-
+dirFunc     = e.getSerie('run_.*_nm$').toJob
 dirNoiseROI = e.getSerie('anat_T1').toJob(0)
 
 
@@ -25,7 +24,7 @@ par.run           = 1;
 par.display       = 0;
 par.print_figures = 0;
 
-par.redo      = 1;
+par.redo      = 0;
 par.usePhysio = 0;
 par.noiseROI  = 1;
 

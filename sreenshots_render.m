@@ -123,7 +123,7 @@ for m  = 1 : length(models)
             
             % Save PNG
             F = spm_figure('GetWin','Graphics');
-            fname = fullfile(outdir,[models(m).exam.name '---' contrasts{c} '---' views{v,3}]);
+            fname = fullfile(outdir,[ contrasts{c} '---' views{v,3} '---' models(m).exam.name]);
             saveas(F,fname,'png')
             
         end
