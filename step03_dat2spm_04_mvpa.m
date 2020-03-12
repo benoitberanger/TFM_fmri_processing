@@ -8,20 +8,15 @@ onsets_path = fullfile(subj_path,'onsets');
 
 onsets_datfile = gfile(onsets_path,'_indiview_run\d.dat$');
 
-ntrials = 40;
-vect = (1:ntrials)';
-vect = num2str(vect,'%.2d');
+ntrials = 80;
+name_other = {'jitter_1', 'static', 'jitter_2', 'response'};
 
-name_mvpa = cellstr(strcat('mvt_amb_',vect));
-name_other = {'jitter_1', 'static',  'mvt_noamb', 'jitter_2', 'response'};
-
-names = [name_mvpa(:) ; name_other(:)];
+n_names = ntrials + length(name_other);
 
 jitter_1 = ntrials+1;
 static   = ntrials+2;
-mvt_noamb= ntrials+3;
-jitter_2 = ntrials+4;
-response = ntrials+5;
+jitter_2 = ntrials+3;
+response = ntrials+4;
 
 for iSubj = 1 : length(onsets_datfile)
     
@@ -34,7 +29,7 @@ for iSubj = 1 : length(onsets_datfile)
             dat = dat(dat.OK==1,:); % reject bad trials
         end
         
-        [ onsets , durations ] = deal( cell(size(names)) );
+        [ names, onsets , durations ] = deal( cell(n_names,1) );
         
         pmod = struct;
         
@@ -46,9 +41,12 @@ for iSubj = 1 : length(onsets_datfile)
             onsets{static  }(end+1) = dat.MRI_T(evt) + dat.INIT_PAUSE(evt);
             if     dat.AMBIG(evt)==1
                 counter = counter + 1;
-                onsets{counter  }(end+1) = dat.MRI_T(evt) + dat.INIT_PAUSE(evt) + 0.5;
+                names {counter} = sprintf('mvt_pamb_%.2d',counter);
+                onsets{counter}(end+1) = dat.MRI_T(evt) + dat.INIT_PAUSE(evt) + 0.5;
             elseif dat.AMBIG(evt)==0
-                onsets{mvt_noamb}(end+1) = dat.MRI_T(evt) + dat.INIT_PAUSE(evt) + 0.5;
+                counter = counter + 1;
+                names {counter} = sprintf('mvt_namb_%.2d',counter);
+                onsets{counter}(end+1) = dat.MRI_T(evt) + dat.INIT_PAUSE(evt) + 0.5;
             else
                 error('amb ?')
             end
@@ -60,9 +58,9 @@ for iSubj = 1 : length(onsets_datfile)
             durations{jitter_1}(end+1) = dat.INIT_PAUSE(evt);
             durations{static  }(end+1) = 0.5;
             if     dat.AMBIG(evt)==1
-                durations{counter  }(end+1) = 1.0;
+                durations{counter}(end+1) = 1.0;
             elseif dat.AMBIG(evt)==0
-                durations{mvt_noamb}(end+1) = 1.0;
+                durations{counter}(end+1) = 1.0;
             else
                 error('amb ?')
             end
@@ -94,6 +92,8 @@ for iSubj = 1 : length(onsets_datfile)
             %             % no ambig for mvt_noamb
             
         end
+        names(ntrials+1:end) = name_other;
+        
         
         [pathstr, name, ext] = fileparts(   deblank(onsets_datfile{iSubj}(iRun,:)) );
         %         save( fullfile(pathstr,[name '_mvpa']) , 'names', 'onsets', 'durations', 'pmod' )

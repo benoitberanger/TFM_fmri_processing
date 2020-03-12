@@ -31,11 +31,19 @@ for m = 1 : numel(models)
     end
     
     % Trial extraction
-    res_trial = regexp(beta_name,'mvt_amb_(\d+)','tokens');
+    res_trial = regexp(beta_name,'mvt_\wamb_(\d+)','tokens');
     trial_idx = zeros(size(res_trial));
     for i = 1 : length(trial_idx)
         if isempty(res_trial{i}), continue, end
         trial_idx(i) = str2double(res_trial{i}{1}{1});
+    end
+    
+    % pn extraction
+    res_pn = regexp(beta_name,'mvt_(\w)amb','tokens');
+    pn_val = cell(size(res_pn));
+    for i = 1 : length(pn_val)
+        if isempty(res_pn{i}), continue, end
+        pn_val{i} = res_pn{i}{1}{1};
     end
     
     in_file  = cell(size(beta_name));
@@ -45,11 +53,12 @@ for m = 1 : numel(models)
         
         run   =   run_idx(beta);
         trial = trial_idx(beta);
+        pn    =    pn_val{beta};
         
         if trial == 0, continue, end
         
         in_file {beta} = fullfile( SPM.swd, SPM.Vbeta(beta).fname );
-        out_file{beta} = fullfile( char(out), sprintf('run%.2d_trial%.2d.nii',run,trial) );
+        out_file{beta} = fullfile( char(out), sprintf('run%.2d_trial%.2d_%s.nii',run,trial,pn) );
         
     end
     

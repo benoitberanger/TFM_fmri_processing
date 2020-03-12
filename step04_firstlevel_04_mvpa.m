@@ -33,8 +33,8 @@ par.file_reg = '^sw.*nii';
 %% Specify boxcar
 
 par.redo    = 0;
-par.sge     = 0;
-par.run     = 1;
+par.sge     = 1;
+par.run     = 0;
 par.display = 0;
 par.jobname = 'spm_glm_def';
 
@@ -52,8 +52,8 @@ save('e','e')
 fspm = e.getModel(model_name).removeEmpty.toJob;
 
 clear par
-par.sge     = 0;
-par.run     = 1;
+par.sge     = 1;
+par.run     = 0;
 par.redo    = 0;
 par.display = 0;
 job_first_level_estimate(fspm,par);
