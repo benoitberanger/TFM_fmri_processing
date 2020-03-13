@@ -3,5 +3,7 @@
 
 # Exept the scripts
 !*.m
+!*.py
+
 !.gitignore
 
